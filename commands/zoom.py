@@ -4,7 +4,7 @@ from utils import vault
 data = vault.get_data()
 
 def zoom_exists(chat_id):
-    if bool(data['channels'][chat_id]['zoom']):
+    if bool(data['channels'][str(chat_id)]['zoom']):
         return True
     else:
         return False

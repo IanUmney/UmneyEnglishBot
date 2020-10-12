@@ -1,7 +1,7 @@
 
 from utils import timestamp, vault, keyboards, gate_keeper, spell_check
 from commands import oxford, urbandictionary, zoom, vocab, synonyms
-from commands.onboarding import terms, payment
+from commands.onboarding import payment
 import telebot, os, json, TOKENS
 from commands.admin import admin
 from telebot import types
@@ -137,7 +137,8 @@ def command_zoom(message=None, reply=None, edit_message_id=None):
         bot.send_message(chat_id, 'This is a premium feature only.\nUse /price to buy a premium key.')
         return
 
-    bot.send_message(chat_id, f'<b>Zoom</b>\n{zoom.get_group_links(chat_id)}', parse_mode='HTML', reply_markup=keyboards.zoom_Keyboard())
+    # NOTE: use this when implementing next feature for /zoom
+    # bot.send_message(chat_id, f'<b>Zoom</b>\n{zoom.get_group_links(chat_id)}', parse_mode='HTML', reply_markup=keyboards.zoom_Keyboard())
 
 
     def send_error_message():
@@ -157,7 +158,7 @@ def command_zoom(message=None, reply=None, edit_message_id=None):
         else:
             send_error_message()
     elif len(args) <= 3:
-        if args[0].lower() == 'add':0
+        if args[0].lower() == 'add':
             bot.send_message(chat_id, zoom.add_link(chat_id, args[1].lower(), args[2]))
         else:
             send_error_message()
@@ -328,7 +329,7 @@ def command_define(message):
 
 #Admin commands for bot owner
 @bot.message_handler(commands=['admin'])
-def command_terms(message):
+def command_admin(message):
     check_channel_is_registered(message)
     print(message.text)
     if message.from_user.id == 741444566:
@@ -342,12 +343,6 @@ def command_terms(message):
     else:
         bot.send_message(message.chat.id,
         "🚫🖕🏽🖕🏽 Piss off 🖕🏽🖕🏽🚫")
-
-@bot.message_handler(commands=['terms'])
-def command_terms(message):
-    check_channel_is_registered(message)
-    print(message.text)
-    terms.terms(bot, message)
 
 @bot.message_handler(commands=['price', 'pay'])
 def command_price(message):
@@ -381,6 +376,8 @@ def got_payment(message):
     if message.from_user.id == 741444566:
         data['channels'][chat_id]['premium'] = True
         vault.dump_data(data)
+        bot.send_message(chat_id, 'This group is now upgraded.')
+        return
 
     if message.chat.id == message.from_user.id:
         bot.send_message(chat_id, "❗️ You cannot upgrade our private chat ❗️")
